@@ -1,0 +1,15 @@
+package com.sd.onlinebankingsystemassignment.exception;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class ErrorException {
+    int code;
+    String message;
+}
