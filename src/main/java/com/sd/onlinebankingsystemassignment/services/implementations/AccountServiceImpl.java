@@ -12,6 +12,7 @@ import jakarta.persistence.criteria.Predicate;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,10 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     @Override public AccountResponseDto createAccount(AccountCreateDto req) {
         logger.info("createAccount: {}", req);
-        Account account = req.toAccount();
+        Account account = new Account();
+        BeanUtils.copyProperties(req, account);
+//        Account account = req.toAccount();
+
         account.setAccountNumber(Generator.generateAccountNumber(accountRepository.findTop() + 1));
         return accountRepository.save(account).toResponseDto();
     }
@@ -38,8 +42,10 @@ public class AccountServiceImpl implements AccountService {
     @Override public AccountResponseDto updateAccount(Long id, AccountUpdateDto req) {
         logger.info("updateAccount - id: {}, req: {}", id, req.toString());
         Account accountObj = getAccountDetail(id).toAccount();
-        Account updatedAccount = req.updateAccount(accountObj);
-        return accountRepository.save(updatedAccount).toResponseDto();
+        BeanUtils.copyProperties(req, accountObj);
+//        Account updatedAccount = req.updateAccount(accountObj);
+
+        return accountRepository.save(accountObj).toResponseDto();
     }
 
     @Override

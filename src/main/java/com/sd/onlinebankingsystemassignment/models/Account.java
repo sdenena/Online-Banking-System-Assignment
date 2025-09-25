@@ -44,6 +44,7 @@ public class Account extends BaseEntity {
     @Column(name = "balance", precision = 15, scale = 2)
     private BigDecimal balance = BigDecimal.ZERO;
 
+    // For Create
     public Account(Long id, String accountHolderName, AccountType accountType) {
         this.id = id;
         this.accountHolderName = accountHolderName;
@@ -52,6 +53,7 @@ public class Account extends BaseEntity {
         this.accountType = accountType;
     }
 
+    // For Response
     public Account(Long id, String accountHolderName, AccountType accountType, Boolean isActive) {
         this.id = id;
         this.accountHolderName = accountHolderName;
@@ -61,6 +63,13 @@ public class Account extends BaseEntity {
         this.isActive = isActive;
     }
 
+    // For Deposit and Withdraw
+    public Account(Long id, BigDecimal balance) {
+        this.id = id;
+        this.balance = balance;
+    }
+
+    // Convert Entity to Response DTO
     public AccountResponseDto toResponseDto() {
         return new AccountResponseDto(id, accountType, accountNumber, accountHolderName, accountHolderEmail, accountHolderPhone, isActive, balance);
     }
