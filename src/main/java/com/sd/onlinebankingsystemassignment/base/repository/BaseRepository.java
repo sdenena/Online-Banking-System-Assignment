@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @NoRepositoryBean
 public interface BaseRepository<T> extends JpaRepository<T, Long>, JpaSpecificationExecutor<T> {
-    Optional<T> findByIdAndStatusTrue(long id);
+    Optional<T> findByIdAndStatusTrue(Long id);
 }

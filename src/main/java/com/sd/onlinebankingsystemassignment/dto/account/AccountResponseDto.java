@@ -1,7 +1,7 @@
-package com.sd.onlinebankingsystemassignment.dto;
+package com.sd.onlinebankingsystemassignment.dto.account;
 
 import com.sd.onlinebankingsystemassignment.models.Account;
-import com.sd.onlinebankingsystemassignment.models.AccountType;
+import com.sd.onlinebankingsystemassignment.models.enums.AccountType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,6 +22,7 @@ public class AccountResponseDto {
     private String accountHolderPhone;
     private Boolean isActive;
     private BigDecimal balance;
+    private String currency;
 
     public Account toAccount() {
         return new Account(id, accountHolderName, accountType, isActive);

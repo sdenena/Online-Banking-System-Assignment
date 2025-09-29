@@ -1,15 +1,13 @@
-package com.sd.onlinebankingsystemassignment.dto;
+package com.sd.onlinebankingsystemassignment.dto.account;
 
 import com.sd.onlinebankingsystemassignment.models.Account;
-import com.sd.onlinebankingsystemassignment.models.AccountType;
+import com.sd.onlinebankingsystemassignment.models.enums.AccountType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.math.BigDecimal;
 
 @Getter
 @Setter

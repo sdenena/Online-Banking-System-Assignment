@@ -1,4 +1,4 @@
-package com.sd.onlinebankingsystemassignment.dto;
+package com.sd.onlinebankingsystemassignment.dto.login;
 
 import jakarta.validation.constraints.NotBlank;
 

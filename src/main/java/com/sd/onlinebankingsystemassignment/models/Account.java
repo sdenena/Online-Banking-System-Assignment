@@ -1,8 +1,8 @@
 package com.sd.onlinebankingsystemassignment.models;
 
 import com.sd.onlinebankingsystemassignment.base.entity.BaseEntity;
-import com.sd.onlinebankingsystemassignment.dto.AccountCreateDto;
-import com.sd.onlinebankingsystemassignment.dto.AccountResponseDto;
+import com.sd.onlinebankingsystemassignment.dto.account.AccountResponseDto;
+import com.sd.onlinebankingsystemassignment.models.enums.AccountType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -44,6 +44,9 @@ public class Account extends BaseEntity {
     @Column(name = "balance", precision = 15, scale = 2)
     private BigDecimal balance = BigDecimal.ZERO;
 
+    private String currency;
+
+    // For Create
     public Account(Long id, String accountHolderName, AccountType accountType) {
         this.id = id;
         this.accountHolderName = accountHolderName;
@@ -52,6 +55,7 @@ public class Account extends BaseEntity {
         this.accountType = accountType;
     }
 
+    // For Response
     public Account(Long id, String accountHolderName, AccountType accountType, Boolean isActive) {
         this.id = id;
         this.accountHolderName = accountHolderName;
@@ -61,7 +65,8 @@ public class Account extends BaseEntity {
         this.isActive = isActive;
     }
 
+    // Convert Entity to Response DTO
     public AccountResponseDto toResponseDto() {
-        return new AccountResponseDto(id, accountType, accountNumber, accountHolderName, accountHolderEmail, accountHolderPhone, isActive, balance);
+        return new AccountResponseDto(id, accountType, accountNumber, accountHolderName, accountHolderEmail, accountHolderPhone, isActive, balance, currency);
     }
 }

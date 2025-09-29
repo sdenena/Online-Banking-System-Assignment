@@ -1,4 +1,4 @@
-package com.sd.onlinebankingsystemassignment.dto;
+package com.sd.onlinebankingsystemassignment.dto.users;
 
 import com.sd.onlinebankingsystemassignment.models.Role;
 import jakarta.validation.constraints.NotBlank;

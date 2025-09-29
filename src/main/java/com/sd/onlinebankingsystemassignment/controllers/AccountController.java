@@ -4,10 +4,16 @@ import com.sd.onlinebankingsystemassignment.aop.AuditFilter;
 import com.sd.onlinebankingsystemassignment.base.response.ResponseMessage;
 import com.sd.onlinebankingsystemassignment.base.response.ResponseObj;
 import com.sd.onlinebankingsystemassignment.base.response.ResponsePage;
-import com.sd.onlinebankingsystemassignment.dto.AccountCreateDto;
-import com.sd.onlinebankingsystemassignment.dto.AccountResponseDto;
-import com.sd.onlinebankingsystemassignment.dto.AccountUpdateDto;
+import com.sd.onlinebankingsystemassignment.dto.account.AccountCreateDto;
+import com.sd.onlinebankingsystemassignment.dto.account.AccountResponseDto;
+import com.sd.onlinebankingsystemassignment.dto.account.AccountUpdateDto;
+import com.sd.onlinebankingsystemassignment.dto.bank_operation.DepositWithdrawDto;
+import com.sd.onlinebankingsystemassignment.dto.bank_operation.DepositWithdrawResponseDto;
+import com.sd.onlinebankingsystemassignment.dto.bank_operation.TransferDto;
+import com.sd.onlinebankingsystemassignment.dto.bank_operation.TransferResponseDto;
+import com.sd.onlinebankingsystemassignment.repositories.AccountRepository;
 import com.sd.onlinebankingsystemassignment.services.AccountService;
+import com.sd.onlinebankingsystemassignment.services.BankOperationService;
 import com.sd.onlinebankingsystemassignment.utils.Constant;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AccountController {
     private final AccountService accountService;
+    private final BankOperationService bankOperationService;
 
     @AuditFilter()
     @PostMapping
@@ -55,5 +62,23 @@ public class AccountController {
         var listPage = accountService.getAccountList(query, page, size);
         // Since getAccountList already returns Page<AccountResponseDto>, no conversion needed
         return new ResponsePage<>(listPage.getContent(), listPage.getTotalElements());
+    }
+
+    @AuditFilter()
+    @PostMapping("/deposit")
+    public ResponseObj<DepositWithdrawResponseDto> deposit(@Valid @RequestBody DepositWithdrawDto req) {
+        return new ResponseObj<>(bankOperationService.depositFunds(req));
+    }
+
+    @AuditFilter()
+    @PostMapping("/withdraw")
+    public ResponseObj<DepositWithdrawResponseDto> withdraw(@Valid @RequestBody DepositWithdrawDto req) {
+        return new ResponseObj<>(bankOperationService.withdrawFunds(req));
+    }
+
+    @AuditFilter()
+    @PostMapping("/transfer")
+    public ResponseObj<TransferResponseDto> transfer(@Valid @RequestBody TransferDto req) {
+        return new ResponseObj<>(bankOperationService.transferFunds(req));
     }
 }

@@ -1,8 +1,8 @@
 package com.sd.onlinebankingsystemassignment.services.implementations;
 
-import com.sd.onlinebankingsystemassignment.dto.AccountCreateDto;
-import com.sd.onlinebankingsystemassignment.dto.AccountResponseDto;
-import com.sd.onlinebankingsystemassignment.dto.AccountUpdateDto;
+import com.sd.onlinebankingsystemassignment.dto.account.AccountCreateDto;
+import com.sd.onlinebankingsystemassignment.dto.account.AccountResponseDto;
+import com.sd.onlinebankingsystemassignment.dto.account.AccountUpdateDto;
 import com.sd.onlinebankingsystemassignment.exception.CustomException;
 import com.sd.onlinebankingsystemassignment.models.Account;
 import com.sd.onlinebankingsystemassignment.repositories.AccountRepository;
@@ -12,11 +12,13 @@ import jakarta.persistence.criteria.Predicate;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -29,7 +31,10 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     @Override public AccountResponseDto createAccount(AccountCreateDto req) {
         logger.info("createAccount: {}", req);
-        Account account = req.toAccount();
+        Account account = new Account();
+        BeanUtils.copyProperties(req, account);
+//        Account account = req.toAccount();
+
         account.setAccountNumber(Generator.generateAccountNumber(accountRepository.findTop() + 1));
         return accountRepository.save(account).toResponseDto();
     }
@@ -38,7 +43,9 @@ public class AccountServiceImpl implements AccountService {
     @Override public AccountResponseDto updateAccount(Long id, AccountUpdateDto req) {
         logger.info("updateAccount - id: {}, req: {}", id, req.toString());
         Account accountObj = getAccountDetail(id).toAccount();
+//        BeanUtils.copyProperties(req, accountObj);
         Account updatedAccount = req.updateAccount(accountObj);
+
         return accountRepository.save(updatedAccount).toResponseDto();
     }
 
@@ -77,5 +84,25 @@ public class AccountServiceImpl implements AccountService {
         accountObj.setStatus(false);
 
         accountRepository.save(accountObj);
+    }
+
+    @Override
+    public Account getAccountDetailByAccountNumber(String accountNumber) {
+        logger.info("getAccountDetailByAccountNumber - accountNumber: {}", accountNumber);
+        final var account = accountRepository.findByAccountNumberAndStatusTrue(accountNumber).orElse(null);
+
+        if (account == null) {
+            throw new CustomException(404, "Account number %s not found".formatted(accountNumber));
+        }
+
+        return account;
+    }
+
+    @Transactional
+    @Override public void updateAccountBalance(Account account) {
+        logger.info("updateAccountBalance - updatedBalance: {}", account.getBalance());
+        account.setBalance(account.getBalance());
+
+        accountRepository.save(account);
     }
 }

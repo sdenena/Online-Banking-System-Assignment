@@ -4,7 +4,7 @@ import com.sd.onlinebankingsystemassignment.aop.AuditFilter;
 import com.sd.onlinebankingsystemassignment.base.response.ResponseMessage;
 import com.sd.onlinebankingsystemassignment.base.response.ResponseObj;
 import com.sd.onlinebankingsystemassignment.base.response.ResponsePage;
-import com.sd.onlinebankingsystemassignment.dto.RoleDto;
+import com.sd.onlinebankingsystemassignment.dto.users.RoleDto;
 import com.sd.onlinebankingsystemassignment.models.Role;
 import com.sd.onlinebankingsystemassignment.services.RoleService;
 import com.sd.onlinebankingsystemassignment.utils.Constant;
