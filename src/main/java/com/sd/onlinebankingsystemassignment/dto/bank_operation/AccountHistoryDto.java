@@ -27,6 +27,9 @@ public class AccountHistoryDto {
     @NotBlank(message = "Transaction Status is required")
     private TransactionStatus transactionStatus;
 
+    @NotBlank(message = "Currency is required")
+    private String currency;
+
     @Positive
     @NotNull
     private BigDecimal amount = null;

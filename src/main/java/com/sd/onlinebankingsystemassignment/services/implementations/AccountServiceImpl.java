@@ -99,8 +99,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Transactional
-    @Override public void updateAccountBalance(Account account, BigDecimal newBalance) {
-        account.setBalance(account.getBalance().add(newBalance));
+    @Override public void updateAccountBalance(Account account) {
+        logger.info("updateAccountBalance - updatedBalance: {}", account.getBalance());
+        account.setBalance(account.getBalance());
 
         accountRepository.save(account);
     }

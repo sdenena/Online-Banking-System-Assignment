@@ -9,6 +9,8 @@ import com.sd.onlinebankingsystemassignment.dto.account.AccountResponseDto;
 import com.sd.onlinebankingsystemassignment.dto.account.AccountUpdateDto;
 import com.sd.onlinebankingsystemassignment.dto.bank_operation.DepositWithdrawDto;
 import com.sd.onlinebankingsystemassignment.dto.bank_operation.DepositWithdrawResponseDto;
+import com.sd.onlinebankingsystemassignment.dto.bank_operation.TransferDto;
+import com.sd.onlinebankingsystemassignment.dto.bank_operation.TransferResponseDto;
 import com.sd.onlinebankingsystemassignment.repositories.AccountRepository;
 import com.sd.onlinebankingsystemassignment.services.AccountService;
 import com.sd.onlinebankingsystemassignment.services.BankOperationService;
@@ -66,5 +68,17 @@ public class AccountController {
     @PostMapping("/deposit")
     public ResponseObj<DepositWithdrawResponseDto> deposit(@Valid @RequestBody DepositWithdrawDto req) {
         return new ResponseObj<>(bankOperationService.depositFunds(req));
+    }
+
+    @AuditFilter()
+    @PostMapping("/withdraw")
+    public ResponseObj<DepositWithdrawResponseDto> withdraw(@Valid @RequestBody DepositWithdrawDto req) {
+        return new ResponseObj<>(bankOperationService.withdrawFunds(req));
+    }
+
+    @AuditFilter()
+    @PostMapping("/transfer")
+    public ResponseObj<TransferResponseDto> transfer(@Valid @RequestBody TransferDto req) {
+        return new ResponseObj<>(bankOperationService.transferFunds(req));
     }
 }

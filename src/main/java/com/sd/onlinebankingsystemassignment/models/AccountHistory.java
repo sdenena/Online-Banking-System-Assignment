@@ -41,4 +41,6 @@ public class AccountHistory extends BaseEntity {
 
     @Column(name = "tran_date")
     private Date tranDate;
+
+    private String currency;
 }

@@ -63,8 +63,8 @@ public class SecurityConfigure {
                        auth.requestMatchers(url).permitAll();
                    }
 
-                    // Everything else is denied
-                    auth.anyRequest().denyAll();
+                    // Everything else is secured
+                    auth.anyRequest().authenticated();
                 })
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)

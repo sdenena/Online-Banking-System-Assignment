@@ -22,6 +22,7 @@ public class AccountResponseDto {
     private String accountHolderPhone;
     private Boolean isActive;
     private BigDecimal balance;
+    private String currency;
 
     public Account toAccount() {
         return new Account(id, accountHolderName, accountType, isActive);

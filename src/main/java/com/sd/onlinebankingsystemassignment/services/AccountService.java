@@ -15,5 +15,5 @@ public interface AccountService {
     Page<AccountResponseDto> getAccountList(String query, int page, int size);
     void deleteAccount(Long id);
     Account getAccountDetailByAccountNumber(String accountNumber);
-    void updateAccountBalance(Account account, BigDecimal newBalance);
+    void updateAccountBalance(Account account);
 }

@@ -44,6 +44,8 @@ public class Account extends BaseEntity {
     @Column(name = "balance", precision = 15, scale = 2)
     private BigDecimal balance = BigDecimal.ZERO;
 
+    private String currency;
+
     // For Create
     public Account(Long id, String accountHolderName, AccountType accountType) {
         this.id = id;
@@ -65,6 +67,6 @@ public class Account extends BaseEntity {
 
     // Convert Entity to Response DTO
     public AccountResponseDto toResponseDto() {
-        return new AccountResponseDto(id, accountType, accountNumber, accountHolderName, accountHolderEmail, accountHolderPhone, isActive, balance);
+        return new AccountResponseDto(id, accountType, accountNumber, accountHolderName, accountHolderEmail, accountHolderPhone, isActive, balance, currency);
     }
 }

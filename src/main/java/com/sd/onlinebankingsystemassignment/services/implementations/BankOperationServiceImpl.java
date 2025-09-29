@@ -4,11 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sd.onlinebankingsystemassignment.dto.bank_operation.*;
 import com.sd.onlinebankingsystemassignment.exception.CustomException;
 import com.sd.onlinebankingsystemassignment.models.Account;
+import com.sd.onlinebankingsystemassignment.models.ExchangeRate;
 import com.sd.onlinebankingsystemassignment.models.enums.TransactionStatus;
 import com.sd.onlinebankingsystemassignment.models.enums.TransactionType;
 import com.sd.onlinebankingsystemassignment.services.AccountHistoryService;
 import com.sd.onlinebankingsystemassignment.services.AccountService;
 import com.sd.onlinebankingsystemassignment.services.BankOperationService;
+import com.sd.onlinebankingsystemassignment.services.ExchangeRateService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +27,7 @@ public class BankOperationServiceImpl implements BankOperationService {
 
     private final AccountService accountService;
     private final AccountHistoryService accountHistoryService;
-    private final ObjectMapper jacksonObjectMapper;
+    private final ExchangeRateService exchangeRateService;
 
     @Override
     public TransferResponseDto transferFunds(TransferDto transferDto) {
@@ -41,15 +43,20 @@ public class BankOperationServiceImpl implements BankOperationService {
             throw new CustomException(402, "Insufficient balance");
         }
 
+        // Exchange rate
+        ExchangeRate exchangeRate = exchangeRateService.getExchangeRate(senderAccount.getCurrency(), receiverAccount.getCurrency());
+        BigDecimal amount = exchangeRate.getMethod().cal(transferDto.getAmount(), exchangeRate.getExchangeRate());
+
+
         // Deduct from sender
         BigDecimal newSenderBalance = senderAccount.getBalance().subtract(transferDto.getAmount());
         senderAccount.setBalance(newSenderBalance);
-        accountService.updateAccountBalance(senderAccount, newSenderBalance);
+        accountService.updateAccountBalance(senderAccount);
 
         // Add to receiver
-        BigDecimal newReceiverBalance = receiverAccount.getBalance().add(transferDto.getAmount());
+        BigDecimal newReceiverBalance = receiverAccount.getBalance().add(amount);
         receiverAccount.setBalance(newReceiverBalance);
-        accountService.updateAccountBalance(receiverAccount, newReceiverBalance);
+        accountService.updateAccountBalance(receiverAccount);
 
         // Create account history for sender
         AccountHistoryDto senderHistoryDto = new AccountHistoryDto();
@@ -59,16 +66,18 @@ public class BankOperationServiceImpl implements BankOperationService {
         senderHistoryDto.setTransactionType(TransactionType.TRANSFER);
         senderHistoryDto.setTransactionStatus(TransactionStatus.COMPLETED);
         senderHistoryDto.setTranDate(new Date());
+        senderHistoryDto.setCurrency(senderAccount.getCurrency());
         AccountHistoryDto savedSenderHistory = accountHistoryService.createAccountHistory(senderHistoryDto);
 
         // Create account history for receiver
         AccountHistoryDto receiverHistoryDto = new AccountHistoryDto();
         receiverHistoryDto.setFromAccountNumber(transferDto.getFromAccountNumber());
         receiverHistoryDto.setToAccountNumber(transferDto.getToAccountNumber());
-        receiverHistoryDto.setAmount(transferDto.getAmount());
+        receiverHistoryDto.setAmount(amount);
         receiverHistoryDto.setTransactionType(TransactionType.TRANSFER);
         receiverHistoryDto.setTransactionStatus(TransactionStatus.COMPLETED);
         receiverHistoryDto.setTranDate(new Date());
+        receiverHistoryDto.setCurrency(receiverAccount.getCurrency());
         accountHistoryService.createAccountHistory(receiverHistoryDto);
 
         // Create response DTO properly
@@ -92,7 +101,7 @@ public class BankOperationServiceImpl implements BankOperationService {
         account.setBalance(newBalance);
 
         // Save changes to database - THIS IS CRITICAL
-        accountService.updateAccountBalance(account, newBalance);
+        accountService.updateAccountBalance(account);
 
         // Create account history
         AccountHistoryDto accountHistoryDto = new AccountHistoryDto();
@@ -100,6 +109,7 @@ public class BankOperationServiceImpl implements BankOperationService {
         accountHistoryDto.setAmount(depositWithdrawDto.getAmount());
         accountHistoryDto.setTransactionType(TransactionType.DEPOSIT);
         accountHistoryDto.setTransactionStatus(TransactionStatus.COMPLETED);
+        accountHistoryDto.setCurrency(account.getCurrency());
         accountHistoryDto.setTranDate(new Date());
 
         AccountHistoryDto savedHistory = accountHistoryService.createAccountHistory(accountHistoryDto);
@@ -126,7 +136,7 @@ public class BankOperationServiceImpl implements BankOperationService {
         account.setBalance(newBalance);
 
         // Save changes to database - THIS IS CRITICAL
-        accountService.updateAccountBalance(account, newBalance);
+        accountService.updateAccountBalance(account);
 
         // Create account history
         AccountHistoryDto accountHistoryDto = new AccountHistoryDto();
@@ -134,6 +144,7 @@ public class BankOperationServiceImpl implements BankOperationService {
         accountHistoryDto.setAmount(depositWithdrawDto.getAmount());
         accountHistoryDto.setTransactionType(TransactionType.WITHDRAWAL);
         accountHistoryDto.setTransactionStatus(TransactionStatus.COMPLETED);
+        accountHistoryDto.setCurrency(account.getCurrency());
 
         AccountHistoryDto savedHistory = accountHistoryService.createAccountHistory(accountHistoryDto);
 

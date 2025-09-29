@@ -27,6 +27,9 @@ public class AccountCreateDto {
     @NotNull(message = "Phone number is required")
     private String accountHolderPhone;
 
+    @NotBlank(message = "Currency is required")
+    private String currency;
+
     public Account toAccount() {
         return new Account(id, accountHolderName, accountType);
     }
