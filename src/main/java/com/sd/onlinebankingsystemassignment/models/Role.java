@@ -1,7 +1,7 @@
 package com.sd.onlinebankingsystemassignment.models;
 
 import com.sd.onlinebankingsystemassignment.base.entity.BaseEntity;
-import com.sd.onlinebankingsystemassignment.dto.RoleDto;
+import com.sd.onlinebankingsystemassignment.dto.users.RoleDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

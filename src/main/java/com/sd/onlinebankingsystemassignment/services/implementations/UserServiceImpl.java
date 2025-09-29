@@ -2,9 +2,9 @@ package com.sd.onlinebankingsystemassignment.services.implementations;
 
 import com.sd.onlinebankingsystemassignment.base.response.ResponseMessage;
 import com.sd.onlinebankingsystemassignment.base.response.ResponseObj;
-import com.sd.onlinebankingsystemassignment.dto.LoginRequestDto;
-import com.sd.onlinebankingsystemassignment.dto.LoginResponseDto;
-import com.sd.onlinebankingsystemassignment.dto.UserUpdateDto;
+import com.sd.onlinebankingsystemassignment.dto.login.LoginRequestDto;
+import com.sd.onlinebankingsystemassignment.dto.login.LoginResponseDto;
+import com.sd.onlinebankingsystemassignment.dto.users.UserUpdateDto;
 import com.sd.onlinebankingsystemassignment.exception.ApiErrorException;
 import com.sd.onlinebankingsystemassignment.models.Users;
 import com.sd.onlinebankingsystemassignment.repositories.UserRepository;

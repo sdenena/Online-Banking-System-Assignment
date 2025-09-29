@@ -1,6 +1,6 @@
 package com.sd.onlinebankingsystemassignment.services;
 
-import com.sd.onlinebankingsystemassignment.dto.RoleDto;
+import com.sd.onlinebankingsystemassignment.dto.users.RoleDto;
 import com.sd.onlinebankingsystemassignment.models.Role;
 import org.springframework.data.domain.Page;
 

@@ -1,8 +1,8 @@
 package com.sd.onlinebankingsystemassignment.controllers;
 
 import com.sd.onlinebankingsystemassignment.base.response.ResponseObj;
-import com.sd.onlinebankingsystemassignment.dto.LoginRequestDto;
-import com.sd.onlinebankingsystemassignment.dto.LoginResponseDto;
+import com.sd.onlinebankingsystemassignment.dto.login.LoginRequestDto;
+import com.sd.onlinebankingsystemassignment.dto.login.LoginResponseDto;
 import com.sd.onlinebankingsystemassignment.services.UserService;
 import com.sd.onlinebankingsystemassignment.utils.Constant;
 import lombok.RequiredArgsConstructor;

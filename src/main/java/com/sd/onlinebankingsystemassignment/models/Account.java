@@ -1,8 +1,8 @@
 package com.sd.onlinebankingsystemassignment.models;
 
 import com.sd.onlinebankingsystemassignment.base.entity.BaseEntity;
-import com.sd.onlinebankingsystemassignment.dto.AccountCreateDto;
-import com.sd.onlinebankingsystemassignment.dto.AccountResponseDto;
+import com.sd.onlinebankingsystemassignment.dto.account.AccountResponseDto;
+import com.sd.onlinebankingsystemassignment.models.enums.AccountType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -61,12 +61,6 @@ public class Account extends BaseEntity {
         this.accountHolderPhone = accountHolderName;
         this.accountType = accountType;
         this.isActive = isActive;
-    }
-
-    // For Deposit and Withdraw
-    public Account(Long id, BigDecimal balance) {
-        this.id = id;
-        this.balance = balance;
     }
 
     // Convert Entity to Response DTO

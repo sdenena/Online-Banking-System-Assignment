@@ -1,8 +1,8 @@
 package com.sd.onlinebankingsystemassignment.services.implementations;
 
-import com.sd.onlinebankingsystemassignment.dto.AccountCreateDto;
-import com.sd.onlinebankingsystemassignment.dto.AccountResponseDto;
-import com.sd.onlinebankingsystemassignment.dto.AccountUpdateDto;
+import com.sd.onlinebankingsystemassignment.dto.account.AccountCreateDto;
+import com.sd.onlinebankingsystemassignment.dto.account.AccountResponseDto;
+import com.sd.onlinebankingsystemassignment.dto.account.AccountUpdateDto;
 import com.sd.onlinebankingsystemassignment.exception.CustomException;
 import com.sd.onlinebankingsystemassignment.models.Account;
 import com.sd.onlinebankingsystemassignment.repositories.AccountRepository;
@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -42,10 +43,10 @@ public class AccountServiceImpl implements AccountService {
     @Override public AccountResponseDto updateAccount(Long id, AccountUpdateDto req) {
         logger.info("updateAccount - id: {}, req: {}", id, req.toString());
         Account accountObj = getAccountDetail(id).toAccount();
-        BeanUtils.copyProperties(req, accountObj);
-//        Account updatedAccount = req.updateAccount(accountObj);
+//        BeanUtils.copyProperties(req, accountObj);
+        Account updatedAccount = req.updateAccount(accountObj);
 
-        return accountRepository.save(accountObj).toResponseDto();
+        return accountRepository.save(updatedAccount).toResponseDto();
     }
 
     @Override
@@ -83,5 +84,24 @@ public class AccountServiceImpl implements AccountService {
         accountObj.setStatus(false);
 
         accountRepository.save(accountObj);
+    }
+
+    @Override
+    public Account getAccountDetailByAccountNumber(String accountNumber) {
+        logger.info("getAccountDetailByAccountNumber - accountNumber: {}", accountNumber);
+        final var account = accountRepository.findByAccountNumberAndStatusTrue(accountNumber).orElse(null);
+
+        if (account == null) {
+            throw new CustomException(404, "Account number %s not found".formatted(accountNumber));
+        }
+
+        return account;
+    }
+
+    @Transactional
+    @Override public void updateAccountBalance(Account account, BigDecimal newBalance) {
+        account.setBalance(account.getBalance().add(newBalance));
+
+        accountRepository.save(account);
     }
 }

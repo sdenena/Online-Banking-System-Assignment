@@ -11,11 +11,15 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
@@ -28,7 +32,18 @@ public class SecurityConfigure {
     private final CustomAccessDeniedHandler accessDeniedHandler;
     private final JwtRequestFilter jwtRequestFilter;
 
-    List<String> whiteListEndpoint = List.of(Constant.MAIN_PATH + "/users/register", Constant.MAIN_PATH + "/guards/log-in");
+    private final AppProperty property;
+
+    List<String> whiteListEndpoint = List.of(
+            Constant.MAIN_PATH + "/users/register",
+            Constant.MAIN_PATH + "/guards/log-in",
+            // Swagger UI endpoints
+            "/v3/api-docs/**",
+            "/v3/api-docs",
+            "/swagger-resources/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html"
+    );
 
     @Bean
     public PasswordEncoder bCryptPasswordEncoder() {
@@ -37,20 +52,52 @@ public class SecurityConfigure {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(
-                        auth ->
-                                auth.requestMatchers(whiteListEndpoint.toArray(new String[0])).permitAll()
-                                        .anyRequest().authenticated()
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors
+                        .configurationSource(corsConfigurationSource())
                 )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(
-                        exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                                .accessDeniedHandler(accessDeniedHandler)
+                .authorizeHttpRequests(auth -> {
+                   // Public endpoints
+                   for (String url : whiteListEndpoint) {
+                       auth.requestMatchers(url).permitAll();
+                   }
+
+                    // Everything else is denied
+                    auth.anyRequest().denyAll();
+                })
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
+                )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .headers(headers -> headers
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)
+                        .httpStrictTransportSecurity(hsts -> hsts
+                                .includeSubDomains(true)
+                                .maxAgeInSeconds(7_200_000)
+                        )
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable);
+
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        return request -> {
+            UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+            CorsConfiguration config = new CorsConfiguration();
+            config.setAllowedHeaders(property.getAllow().getHeader().getAllowed());
+            config.setExposedHeaders(property.getAllow().getHeader().getExposed());
+            config.setAllowedOrigins(property.getAllow().getOrigin());
+            config.setAllowedMethods(property.getAllow().getMethod());
+            source.registerCorsConfiguration("/**", config);
+            return source.getCorsConfiguration(request);
+        };
     }
 }

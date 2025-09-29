@@ -1,4 +1,4 @@
-package com.sd.onlinebankingsystemassignment.models;
+package com.sd.onlinebankingsystemassignment.models.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -26,7 +26,7 @@ public enum AccountType {
                 return type;
             }
         }
-        throw new IllegalArgumentException("Invalid AccountType: " + value);
+        throw new IllegalArgumentException("Invalid Account Type: " + value);
     }
 
     @Override

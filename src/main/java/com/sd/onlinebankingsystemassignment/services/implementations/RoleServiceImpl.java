@@ -1,6 +1,6 @@
 package com.sd.onlinebankingsystemassignment.services.implementations;
 
-import com.sd.onlinebankingsystemassignment.dto.RoleDto;
+import com.sd.onlinebankingsystemassignment.dto.users.RoleDto;
 import com.sd.onlinebankingsystemassignment.exception.CustomException;
 import com.sd.onlinebankingsystemassignment.models.Role;
 import com.sd.onlinebankingsystemassignment.repositories.RoleRepository;
