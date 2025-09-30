@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 public class JwtTokenUtil {
@@ -29,10 +30,19 @@ public class JwtTokenUtil {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateToken(UserPrinciple user) {
+    public String generateToken(UserPrinciple userPrinciple) {
         Map<String, List<String>> claims = new HashMap<>();
-        claims.put("authorities", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList());
-        return generateToken(claims, user.getUsername());
+
+        // This extracts ["ROLE_USER", "ROLE_ADMIN"] from UserPrincipal
+        List<String> authorities = userPrinciple.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        System.out.println("Authorities: " + authorities); // Debugging line
+
+        claims.put("authorities", authorities);
+
+        return generateToken(claims, userPrinciple.getUsername());
     }
 
     private String generateToken(Map<String, List<String>> claims, String subject) {

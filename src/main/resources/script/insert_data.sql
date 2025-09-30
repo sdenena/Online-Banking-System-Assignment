@@ -11,3 +11,8 @@ INSERT INTO public.adm_exchange_rate (id, default_exchange_rate, exchange_rate, 
 INSERT INTO public.adm_exchange_rate (id, default_exchange_rate, exchange_rate, from_currency, method, to_currency, created_by_id, created_date, status, updated_by_id, updated_date, version) VALUES (2, null, 1.00, 'KHR', 0, 'KHR', null, null, true, null, null, 0);
 INSERT INTO public.adm_exchange_rate (id, default_exchange_rate, exchange_rate, from_currency, method, to_currency, created_by_id, created_date, status, updated_by_id, updated_date, version) VALUES (3, false, 4000.00, 'USD', 1, 'KHR', null, '2025-09-29 16:45:18.640000', true, null, null, 0);
 INSERT INTO public.adm_exchange_rate (id, default_exchange_rate, exchange_rate, from_currency, method, to_currency, created_by_id, created_date, status, updated_by_id, updated_date, version) VALUES (4, false, 4000.00, 'KHR', 0, 'USD', null, '2025-09-29 16:46:56.862000', true, null, null, 0);
+
+CREATE INDEX idx_account_history_from_acc_dir ON account_history(from_account_number, direction);
+CREATE INDEX idx_account_history_to_acc_dir ON account_history(to_account_number, direction);
+CREATE INDEX idx_account_history_tran_id ON account_history(tran_id);
+CREATE INDEX idx_account_history_tran_date ON account_history(tran_date DESC);

@@ -18,25 +18,13 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountHistoryDto {
+public class AccountHistoryResponseDto {
     private String fromAccountNumber = null;
     private String toAccountNumber = null;
-
-    @NotBlank(message = "Transaction Type is required")
     private TransactionType transactionType;
-
-    @NotBlank(message = "Transaction Status is required")
     private TransactionStatus transactionStatus;
-
-    @NotBlank(message = "Currency is required")
     private String currency;
-
-    @Positive
-    @NotNull
     private BigDecimal amount = null;
-
-    @NotNull
     private Date tranDate = null;
-
     private TransactionDirection direction; // DEBIT or CREDIT
 }

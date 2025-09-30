@@ -17,8 +17,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -69,6 +67,7 @@ public class AccountServiceImpl implements AccountService {
             }
 
             // Fixed: changed "status" to "isActive" to match the entity field
+            predicates.add(cb.isTrue(root.get("status")));
             predicates.add(cb.isTrue(root.get("isActive")));
             Objects.requireNonNull(cq).orderBy(cb.desc(root.get("id")));
             return cb.and(predicates.toArray(new Predicate[0]));

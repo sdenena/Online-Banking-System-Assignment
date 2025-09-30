@@ -1,6 +1,8 @@
 package com.sd.onlinebankingsystemassignment.models;
 
 import com.sd.onlinebankingsystemassignment.base.entity.BaseEntity;
+import com.sd.onlinebankingsystemassignment.dto.account.AccountResponseDto;
+import com.sd.onlinebankingsystemassignment.dto.bank_operation.ExchangeRateResponseDto;
 import com.sd.onlinebankingsystemassignment.models.enums.Calculation;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -27,4 +29,9 @@ public class ExchangeRate extends BaseEntity {
 
     private Calculation method;
     private Boolean defaultExchangeRate = false;
+
+    // Convert Entity to Response DTO
+    public ExchangeRateResponseDto toResponseDto() {
+        return new ExchangeRateResponseDto(id, exchangeRate, fromCurrency, toCurrency, method);
+    }
 }
