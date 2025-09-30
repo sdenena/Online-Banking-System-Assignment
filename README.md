@@ -44,7 +44,7 @@ Once you have the required tools installed, follow these steps to install the Ba
     ```
 4. Build and run the application using Maven
     ```shell
-    mvn spring-boot:run
+    mvn spring-boot:run -Dspring.profiles.active=dev
     ```
 5. Once you have start up application, please run script on directory (/resources/script/insert_data.sql)
 7. Explore the Application: Once the application is up and running, open your web browser and access it at: `http://localhost:8080`
