@@ -63,6 +63,8 @@ public class SecurityConfigure {
                        auth.requestMatchers(url).permitAll();
                    }
 
+                   auth.requestMatchers("/*/account/**").hasRole("Admin");
+
                     // Everything else is secured
                     auth.anyRequest().authenticated();
                 })

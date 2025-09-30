@@ -5,6 +5,7 @@ import com.sd.onlinebankingsystemassignment.dto.bank_operation.*;
 import com.sd.onlinebankingsystemassignment.exception.CustomException;
 import com.sd.onlinebankingsystemassignment.models.Account;
 import com.sd.onlinebankingsystemassignment.models.ExchangeRate;
+import com.sd.onlinebankingsystemassignment.models.enums.TransactionDirection;
 import com.sd.onlinebankingsystemassignment.models.enums.TransactionStatus;
 import com.sd.onlinebankingsystemassignment.models.enums.TransactionType;
 import com.sd.onlinebankingsystemassignment.services.AccountHistoryService;
@@ -67,6 +68,7 @@ public class BankOperationServiceImpl implements BankOperationService {
         senderHistoryDto.setTransactionStatus(TransactionStatus.COMPLETED);
         senderHistoryDto.setTranDate(new Date());
         senderHistoryDto.setCurrency(senderAccount.getCurrency());
+        senderHistoryDto.setDirection(TransactionDirection.DEBIT);
         AccountHistoryDto savedSenderHistory = accountHistoryService.createAccountHistory(senderHistoryDto);
 
         // Create account history for receiver
@@ -78,6 +80,7 @@ public class BankOperationServiceImpl implements BankOperationService {
         receiverHistoryDto.setTransactionStatus(TransactionStatus.COMPLETED);
         receiverHistoryDto.setTranDate(new Date());
         receiverHistoryDto.setCurrency(receiverAccount.getCurrency());
+        receiverHistoryDto.setDirection(TransactionDirection.CREDIT);
         accountHistoryService.createAccountHistory(receiverHistoryDto);
 
         // Create response DTO properly
@@ -110,6 +113,7 @@ public class BankOperationServiceImpl implements BankOperationService {
         accountHistoryDto.setTransactionType(TransactionType.DEPOSIT);
         accountHistoryDto.setTransactionStatus(TransactionStatus.COMPLETED);
         accountHistoryDto.setCurrency(account.getCurrency());
+        accountHistoryDto.setDirection(TransactionDirection.CREDIT);
         accountHistoryDto.setTranDate(new Date());
 
         AccountHistoryDto savedHistory = accountHistoryService.createAccountHistory(accountHistoryDto);
@@ -144,6 +148,7 @@ public class BankOperationServiceImpl implements BankOperationService {
         accountHistoryDto.setAmount(depositWithdrawDto.getAmount());
         accountHistoryDto.setTransactionType(TransactionType.WITHDRAWAL);
         accountHistoryDto.setTransactionStatus(TransactionStatus.COMPLETED);
+        accountHistoryDto.setDirection(TransactionDirection.DEBIT);
         accountHistoryDto.setCurrency(account.getCurrency());
 
         AccountHistoryDto savedHistory = accountHistoryService.createAccountHistory(accountHistoryDto);

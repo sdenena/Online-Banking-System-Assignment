@@ -63,9 +63,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                         .map(String.class::cast)
                         .map(SimpleGrantedAuthority::new)
                         .toList();
+
                 var usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(claim.getSubject(), request, authorities);
 
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+
+                // Debug logging (remove after fixing)
+                System.out.println("Authenticated user: " + claim.getSubject());
+                System.out.println("Authorities: " + authorities);
             }
         }
         filterChain.doFilter(request, response);

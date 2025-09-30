@@ -1,6 +1,9 @@
 package com.sd.onlinebankingsystemassignment.models;
 
 import com.sd.onlinebankingsystemassignment.base.entity.BaseEntity;
+import com.sd.onlinebankingsystemassignment.dto.account.AccountResponseDto;
+import com.sd.onlinebankingsystemassignment.dto.bank_operation.AccountHistoryResponseDto;
+import com.sd.onlinebankingsystemassignment.models.enums.TransactionDirection;
 import com.sd.onlinebankingsystemassignment.models.enums.TransactionStatus;
 import com.sd.onlinebankingsystemassignment.models.enums.TransactionType;
 import jakarta.persistence.*;
@@ -43,4 +46,13 @@ public class AccountHistory extends BaseEntity {
     private Date tranDate;
 
     private String currency;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "direction", length = 10)
+    private TransactionDirection direction; // DEBIT or CREDIT
+
+    // Convert Entity to Response DTO
+    public AccountHistoryResponseDto toResponseDto() {
+        return new AccountHistoryResponseDto(fromAccountNumber, toAccountNumber, transactionType, transactionStatus, currency, amount, tranDate, direction);
+    }
 }

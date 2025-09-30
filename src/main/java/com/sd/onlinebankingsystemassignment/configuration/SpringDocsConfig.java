@@ -34,7 +34,7 @@ public class SpringDocsConfig {
                 .specVersion(SpecVersion.V31)
                 .servers(
                         Collections.singletonList(
-                                new Server().url("http://localhost:8081").description("Local endpoint")
+                                new Server().url("http://localhost:8080").description("Local endpoint")
                         )
                 )
                 .info(

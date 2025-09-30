@@ -10,11 +10,13 @@ import com.sd.onlinebankingsystemassignment.services.RoleService;
 import com.sd.onlinebankingsystemassignment.utils.Constant;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(Constant.MAIN_PATH + "/role")
 @RequiredArgsConstructor
+@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 public class RoleController {
     private  final RoleService roleService;
 
@@ -26,6 +28,7 @@ public class RoleController {
 
     @AuditFilter()
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseObj<RoleDto> getRoleById(@PathVariable Long id) {
         return new ResponseObj<>(roleService.getRoleDetail(id).toRoleDto());
     }
@@ -40,11 +43,12 @@ public class RoleController {
     @DeleteMapping("/{id}")
     public ResponseMessage deleteRole(@PathVariable Long id) {
         roleService.deleteRole(id);
-        return new ResponseMessage();
+        return new ResponseMessage(200, "Successfully deleted role");
     }
 
     @AuditFilter()
     @GetMapping("/list")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponsePage<RoleDto> getRoleListPage(
             @RequestParam(required = false) String query,
             @RequestParam(defaultValue = "0") int page,
