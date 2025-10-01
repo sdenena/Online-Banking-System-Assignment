@@ -20,8 +20,8 @@ The Bank Management System is an API developed using Spring Boot that aims to st
 - API: Enjoy an API designed.
 - Authentication and Authorization: We prioritize security by implementing robust user authentication and authorization mechanisms, guaranteeing safe and controlled access to the system
 - Register Account: We provided Admin user to create accounts.
-- Bank Operations: Admin user can perform Deposit, Withdraw, and Transfer on each account.
-- Transaction History: Admin user can retrieve account history by account number.
+- Bank Operations: User can perform Deposit, Withdraw, and Transfer on each account.
+- Transaction History: User can retrieve account history by account number.
 
 
 ## Installation
