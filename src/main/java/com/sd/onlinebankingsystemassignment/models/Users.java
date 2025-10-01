@@ -2,8 +2,8 @@ package com.sd.onlinebankingsystemassignment.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sd.onlinebankingsystemassignment.base.entity.BaseEntity;
-import com.sd.onlinebankingsystemassignment.dto.account.AccountResponseDto;
 import com.sd.onlinebankingsystemassignment.dto.users.RoleDto;
+import com.sd.onlinebankingsystemassignment.dto.users.RoleResponseDto;
 import com.sd.onlinebankingsystemassignment.dto.users.UserResponseDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -39,10 +39,10 @@ public class Users extends BaseEntity {
 
     // Convert Entity to Response DTO
     public UserResponseDto toResponseDto() {
-        Set<RoleDto> roleDto = roles.stream()
-                .map(Role::toRoleDto)
+        Set<RoleResponseDto> roleResponseDto = roles.stream()
+                .map(Role::toRoleResponseDto)
                 .collect(Collectors.toSet());
 
-        return new UserResponseDto(id, firstName, lastName, email, username, roleDto);
+        return new UserResponseDto(id, firstName, lastName, email, username, roleResponseDto);
     }
 }

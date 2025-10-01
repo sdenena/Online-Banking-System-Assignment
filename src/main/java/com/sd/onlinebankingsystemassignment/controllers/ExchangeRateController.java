@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(Constant.MAIN_PATH + "/exchange-rate")
 @RequiredArgsConstructor
-@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+@PreAuthorize("hasAuthority('ADMIN')")
 public class ExchangeRateController {
     private final ExchangeRateService exchangeRateService;
 
@@ -27,14 +27,12 @@ public class ExchangeRateController {
 
     @AuditFilter
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponseObj<ExchangeRateResponseDto> getExchangeRateById(@PathVariable Long id) {
         return new ResponseObj<>(exchangeRateService.getExchangeRateDetail(id));
     }
 
     @AuditFilter
     @GetMapping("/list")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
     public ResponsePage<ExchangeRateResponseDto> getExchangeRateList(
             @RequestParam(required = false) String query,
             @RequestParam(defaultValue = "0") int page,
