@@ -1,5 +1,5 @@
-# Online Bank System
-Welcome to the Online Bank System repository built using Spring Boot! This project is designed to provide a foundation for managing banking operations using modern web technologies.
+# Online Banking System
+Welcome to the Online Banking System repository built using Spring Boot! This project is designed to provide a foundation for managing banking operations using modern web technologies.
 
 ## Table of Contents
 - [Introduction](#introduction)
