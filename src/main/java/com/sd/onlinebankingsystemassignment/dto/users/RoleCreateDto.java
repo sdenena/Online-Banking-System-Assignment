@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoleDto {
+public class RoleCreateDto {
     private Long id = null;
 
     @NotBlank(message = "Name is required")
@@ -28,14 +28,5 @@ public class RoleDto {
     public Role toRole() {
         var permissionObjs = permissions.stream().map(Permission::new).collect(Collectors.toSet());
         return new Role(id, name, admin, permissionObjs);
-    }
-
-    public Role updateRole(Role role) {
-        var permissionObjs = permissions.stream().map(Permission::new).collect(Collectors.toSet());
-        role.getPermissions().clear();
-        role.getPermissions().addAll(permissionObjs);
-        role.setRoleName(name);
-        role.setAdmin(admin);
-        return role;
     }
 }

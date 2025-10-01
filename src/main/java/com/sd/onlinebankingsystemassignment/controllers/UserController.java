@@ -17,16 +17,17 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(Constant.MAIN_PATH + "/users")
 @RequiredArgsConstructor
-@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("/register")
+    @PostMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CREATE_USER')")
     public ResponseMessage registerUser(@RequestBody UserCreateDto userDto) {
         return userService.registerUser(userDto.toUser());
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'UPDATE_USER')")
     public ResponseMessage updateUser(@PathVariable Long id, @RequestBody UserUpdateDto userDto) {
         userService.updateUser(id, userDto);
         return new ResponseMessage(200, "Successfully updated user");
@@ -34,7 +35,7 @@ public class UserController {
 
     @AuditFilter()
     @GetMapping("/list")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'VIEW_USER')")
     public ResponsePage<UserResponseDto> getAccountListPage(
             @RequestParam(required = false) String query,
             @RequestParam(defaultValue = "0") int page,
@@ -47,7 +48,7 @@ public class UserController {
 
     @AuditFilter()
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'VIEW_USER')")
     public ResponseObj<UserResponseDto> getAccountById(@PathVariable Long id) {
         return new ResponseObj<>(userService.getUserById(id));
     }

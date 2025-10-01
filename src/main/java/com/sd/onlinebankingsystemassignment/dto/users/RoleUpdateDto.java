@@ -2,6 +2,7 @@ package com.sd.onlinebankingsystemassignment.dto.users;
 
 import com.sd.onlinebankingsystemassignment.models.Permission;
 import com.sd.onlinebankingsystemassignment.models.Role;
+import com.sd.onlinebankingsystemassignment.models.Users;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoleDto {
+public class RoleUpdateDto {
     private Long id = null;
 
     @NotBlank(message = "Name is required")
@@ -25,17 +26,13 @@ public class RoleDto {
 
     private List<Long> permissions;
 
-    public Role toRole() {
+    public Role updateRole(Role r) {
         var permissionObjs = permissions.stream().map(Permission::new).collect(Collectors.toSet());
-        return new Role(id, name, admin, permissionObjs);
-    }
+        r.setRoleName(name);
+        r.setAdmin(admin);
+        r.getPermissions().clear();
+        r.getPermissions().addAll(permissionObjs);
 
-    public Role updateRole(Role role) {
-        var permissionObjs = permissions.stream().map(Permission::new).collect(Collectors.toSet());
-        role.getPermissions().clear();
-        role.getPermissions().addAll(permissionObjs);
-        role.setRoleName(name);
-        role.setAdmin(admin);
-        return role;
+        return r;
     }
 }

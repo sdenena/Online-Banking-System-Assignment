@@ -1,6 +1,8 @@
 package com.sd.onlinebankingsystemassignment.services.implementations;
 
-import com.sd.onlinebankingsystemassignment.dto.users.RoleDto;
+import com.sd.onlinebankingsystemassignment.dto.users.RoleCreateDto;
+import com.sd.onlinebankingsystemassignment.dto.users.RoleResponseDto;
+import com.sd.onlinebankingsystemassignment.dto.users.RoleUpdateDto;
 import com.sd.onlinebankingsystemassignment.exception.CustomException;
 import com.sd.onlinebankingsystemassignment.models.Role;
 import com.sd.onlinebankingsystemassignment.repositories.RoleRepository;
@@ -9,8 +11,10 @@ import jakarta.persistence.criteria.Predicate;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,16 +27,31 @@ public class RoleServiceImpl implements RoleService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    public Role createRole(Role req) {
-        return roleRepository.save(req);
+    public RoleResponseDto createRole(RoleCreateDto req) {
+        logger.info("createRole: {}", req);
+        RoleResponseDto roleResponseDto = new RoleResponseDto();
+        Role role = new Role();
+
+        BeanUtils.copyProperties(req, role);
+        var roleSave = roleRepository.save(role);
+
+        BeanUtils.copyProperties(roleSave, roleResponseDto);
+
+        return roleResponseDto;
     }
 
     @Override
-    public Role updateRole(Long id, RoleDto req) {
+    public RoleResponseDto updateRole(Long id, RoleUpdateDto req) {
         logger.info("updateRole - id: {}, req: {}", id, req.toString());
+        RoleResponseDto roleResponseDto = new RoleResponseDto();
+
         Role roleObj = getRoleDetail(id);
         Role updatedRole = req.updateRole(roleObj);
-        return roleRepository.save(updatedRole);
+        var roleUpdate = roleRepository.save(updatedRole);
+
+        BeanUtils.copyProperties(roleUpdate, roleResponseDto);
+
+        return roleResponseDto;
     }
 
     @Override
@@ -42,9 +61,9 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Page<Role> getRoleList(String query, int page, int size) {
+    public Page<RoleResponseDto> getRoleList(String query, int page, int size) {
         logger.info("getRoleList - query: {}, page: {}, size: {}", query, page, size);
-        return roleRepository.findAll((root, cq, cb) -> {
+        var rolePage = roleRepository.findAll((root, cq, cb) -> {
             ArrayList<Predicate> predicates = new ArrayList<>();
 
             if (query != null) {
@@ -56,6 +75,8 @@ public class RoleServiceImpl implements RoleService {
             Objects.requireNonNull(cq).orderBy(cb.desc(root.get("id")));
             return cb.and(predicates.toArray(new Predicate[0]));
         }, PageRequest.of(page, size));
+
+        return rolePage.map(Role::toRoleResponseDto);
     }
 
     @Override

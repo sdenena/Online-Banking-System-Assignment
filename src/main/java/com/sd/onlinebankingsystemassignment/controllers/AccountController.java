@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(Constant.MAIN_PATH + "/account")
 @RequiredArgsConstructor
-@PreAuthorize("hasAuthority('ROLE_ADMIN')")
 public class AccountController {
     private final AccountService accountService;
     private final BankOperationService bankOperationService;
@@ -29,25 +28,28 @@ public class AccountController {
 
     @AuditFilter()
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CREATE_ACCOUNT')")
     public ResponseObj<AccountResponseDto> createAccount(@Valid @RequestBody AccountCreateDto accountCreateDto) {
         return new ResponseObj<>(accountService.createAccount(accountCreateDto));
     }
 
     @AuditFilter()
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'VIEW_ALL_ACCOUNTS')")
     public ResponseObj<AccountResponseDto> getAccountById(@PathVariable Long id) {
         return new ResponseObj<>(accountService.getAccountDetail(id));
     }
 
     @AuditFilter()
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'UPDATE_USER')")
     public ResponseObj<AccountResponseDto> updateAccount(@PathVariable Long id, @Valid @RequestBody AccountUpdateDto accountUpdateDto) {
         return new ResponseObj<>(accountService.updateAccount(id, accountUpdateDto));
     }
 
     @AuditFilter()
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'UPDATE_USER')")
     public ResponseMessage deleteAccount(@PathVariable Long id) {
         accountService.deleteAccount(id);
         return new ResponseMessage();
@@ -56,7 +58,7 @@ public class AccountController {
 
     @AuditFilter()
     @GetMapping("/list")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'VIEW_ALL_ACCOUNTS')")
     public ResponsePage<AccountResponseDto> getAccountListPage(
             @RequestParam(required = false) String query,
             @RequestParam(defaultValue = "0") int page,

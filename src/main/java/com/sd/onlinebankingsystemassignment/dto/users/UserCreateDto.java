@@ -3,6 +3,7 @@ package com.sd.onlinebankingsystemassignment.dto.users;
 import com.sd.onlinebankingsystemassignment.models.Role;
 import com.sd.onlinebankingsystemassignment.models.Users;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,11 +19,12 @@ public class UserCreateDto {
     private Long id;
     private String firstName;
     private String lastName;
-    @NotBlank
+    @NotBlank(message = "Email is required")
     private String email;
-    @NotBlank
+    @NotBlank(message = "Username is required")
     private String username;
     private String password;
+    @NotNull(message = "At least one role is required")
     private List<Long> roles;
 
     public Users toUser() {

@@ -16,5 +16,5 @@ public class UserResponseDto {
     private String lastName;
     private String email;
     private String username;
-    private Set<RoleDto> roles;
+    private Set<RoleResponseDto> roles;
 }

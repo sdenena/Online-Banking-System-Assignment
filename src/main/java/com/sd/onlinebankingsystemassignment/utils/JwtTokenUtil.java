@@ -38,8 +38,6 @@ public class JwtTokenUtil {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
-        System.out.println("Authorities: " + authorities); // Debugging line
-
         claims.put("authorities", authorities);
 
         return generateToken(claims, userPrinciple.getUsername());

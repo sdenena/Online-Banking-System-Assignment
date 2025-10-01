@@ -10,6 +10,7 @@ import com.sd.onlinebankingsystemassignment.exception.ApiErrorException;
 import com.sd.onlinebankingsystemassignment.exception.CustomException;
 import com.sd.onlinebankingsystemassignment.models.Role;
 import com.sd.onlinebankingsystemassignment.models.Users;
+import com.sd.onlinebankingsystemassignment.repositories.RoleRepository;
 import com.sd.onlinebankingsystemassignment.repositories.UserRepository;
 import com.sd.onlinebankingsystemassignment.security.UserPrinciple;
 import com.sd.onlinebankingsystemassignment.services.UserService;
@@ -33,6 +34,7 @@ import java.util.Objects;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtil jwtTokenUtil;
     private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
@@ -45,13 +47,11 @@ public class UserServiceImpl implements UserService {
             throw new ApiErrorException(401, "Invalid username or password");
         }
 
-        List<GrantedAuthority> authorities = new ArrayList<>();
+        var userPermission = roleRepository.getRolePermissionByUserId(user.getId());
 
-        // Add ADMIN role if any role has admin = true
-        boolean isAdmin = user.getRoles().stream()
-                .anyMatch(Role::getAdmin);
+        logger.info("userPermission={}", userPermission);
 
-        authorities.add(isAdmin ? new SimpleGrantedAuthority("ROLE_ADMIN") : new SimpleGrantedAuthority("ROLE_USER"));
+        final var authorities = userPermission.stream().map(p -> new SimpleGrantedAuthority(p.getName())).toList();
 
         final var userDetail = new UserPrinciple(
                 user.getId(), user.getUsername(), user.getPassword(), authorities
