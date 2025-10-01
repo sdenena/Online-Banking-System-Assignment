@@ -3,10 +3,7 @@ package com.sd.onlinebankingsystemassignment.dto.users;
 import com.sd.onlinebankingsystemassignment.models.Permission;
 import com.sd.onlinebankingsystemassignment.models.Role;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,11 +12,12 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class RoleCreateDto {
     private Long id = null;
 
     @NotBlank(message = "Name is required")
-    private String name = null;
+    private String roleName = null;
 
     private Boolean admin = false;
 
@@ -27,6 +25,6 @@ public class RoleCreateDto {
 
     public Role toRole() {
         var permissionObjs = permissions.stream().map(Permission::new).collect(Collectors.toSet());
-        return new Role(id, name, admin, permissionObjs);
+        return new Role(id, roleName, admin, permissionObjs);
     }
 }

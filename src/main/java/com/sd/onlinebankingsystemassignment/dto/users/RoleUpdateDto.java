@@ -20,7 +20,7 @@ public class RoleUpdateDto {
     private Long id = null;
 
     @NotBlank(message = "Name is required")
-    private String name = null;
+    private String roleName = null;
 
     private Boolean admin = false;
 
@@ -28,7 +28,7 @@ public class RoleUpdateDto {
 
     public Role updateRole(Role r) {
         var permissionObjs = permissions.stream().map(Permission::new).collect(Collectors.toSet());
-        r.setRoleName(name);
+        r.setRoleName(roleName);
         r.setAdmin(admin);
         r.getPermissions().clear();
         r.getPermissions().addAll(permissionObjs);

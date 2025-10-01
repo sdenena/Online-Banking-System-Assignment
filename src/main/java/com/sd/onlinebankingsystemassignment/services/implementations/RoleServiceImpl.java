@@ -30,10 +30,7 @@ public class RoleServiceImpl implements RoleService {
     public RoleResponseDto createRole(RoleCreateDto req) {
         logger.info("createRole: {}", req);
         RoleResponseDto roleResponseDto = new RoleResponseDto();
-        Role role = new Role();
-
-        BeanUtils.copyProperties(req, role);
-        var roleSave = roleRepository.save(role);
+        var roleSave = roleRepository.save(req.toRole());
 
         BeanUtils.copyProperties(roleSave, roleResponseDto);
 
