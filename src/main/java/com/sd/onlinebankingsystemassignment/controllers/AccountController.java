@@ -41,6 +41,13 @@ public class AccountController {
     }
 
     @AuditFilter()
+    @GetMapping("/account-number")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'VIEW_ALL_ACCOUNTS')")
+    public ResponseObj<AccountResponseDto> getAccountById(@RequestParam String accountNumber) {
+        return new ResponseObj<>(accountService.getAccountDetailByAccountNumber(accountNumber).toResponseDto());
+    }
+
+    @AuditFilter()
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'UPDATE_USER')")
     public ResponseObj<AccountResponseDto> updateAccount(@PathVariable Long id, @Valid @RequestBody AccountUpdateDto accountUpdateDto) {
