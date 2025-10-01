@@ -25,6 +25,11 @@ VALUES ('CREATE_USER', 'Create new user', 'USER_MANAGEMENT'),
 -- Insert Apply Permission For Admin
 INSERT INTO role_permission (role_id, permission_id) VALUES(1, 6);
 
+-- Transaction Limit
+INSERT INTO public.transaction_limits (id, created_by_id, created_date, status, updated_by_id, updated_date, version, limit_amount, transaction_type) VALUES (1, null, null, true, null, null, 0, 100, 'TRANSFER');
+INSERT INTO public.transaction_limits (id, created_by_id, created_date, status, updated_by_id, updated_date, version, limit_amount, transaction_type) VALUES (2, null, null, true, null, null, 0, 200, 'DEPOSIT');
+INSERT INTO public.transaction_limits (id, created_by_id, created_date, status, updated_by_id, updated_date, version, limit_amount, transaction_type) VALUES (3, null, null, true, null, null, 0, 100, 'WITHDRAWAL');
+
 -- Create Indexes
 CREATE INDEX idx_account_history_from_acc_dir ON account_history(from_account_number, direction);
 CREATE INDEX idx_account_history_to_acc_dir ON account_history(to_account_number, direction);

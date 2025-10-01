@@ -1,6 +1,5 @@
 package com.sd.onlinebankingsystemassignment.services.implementations;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sd.onlinebankingsystemassignment.dto.bank_operation.*;
 import com.sd.onlinebankingsystemassignment.exception.CustomException;
 import com.sd.onlinebankingsystemassignment.models.Account;
@@ -8,6 +7,7 @@ import com.sd.onlinebankingsystemassignment.models.ExchangeRate;
 import com.sd.onlinebankingsystemassignment.models.enums.TransactionDirection;
 import com.sd.onlinebankingsystemassignment.models.enums.TransactionStatus;
 import com.sd.onlinebankingsystemassignment.models.enums.TransactionType;
+import com.sd.onlinebankingsystemassignment.repositories.TransactionLimitRepository;
 import com.sd.onlinebankingsystemassignment.services.AccountHistoryService;
 import com.sd.onlinebankingsystemassignment.services.AccountService;
 import com.sd.onlinebankingsystemassignment.services.BankOperationService;
@@ -29,6 +29,7 @@ public class BankOperationServiceImpl implements BankOperationService {
     private final AccountService accountService;
     private final AccountHistoryService accountHistoryService;
     private final ExchangeRateService exchangeRateService;
+    private final TransactionLimitRepository transactionLimitRepository;
 
     @Override
     public TransferResponseDto transferFunds(TransferDto transferDto) {
@@ -42,6 +43,17 @@ public class BankOperationServiceImpl implements BankOperationService {
 
         if (senderAccount.getBalance().compareTo(transferDto.getAmount()) < 0) {
             throw new CustomException(402, "Insufficient balance");
+        }
+
+        var exchangeRateForLimit = exchangeRateService.getExchangeRate(senderAccount.getCurrency(), "USD");
+        var transactionLimit = transactionLimitRepository.findByTransactionTypeAndStatusTrue(TransactionType.TRANSFER);
+        BigDecimal amountForLimit = exchangeRateForLimit.getMethod().cal(transferDto.getAmount(), exchangeRateForLimit.getExchangeRate());
+
+        logger.info("transactionLimit: {}", transactionLimit.getLimitAmount());
+        logger.info("amountForLimit: {}", amountForLimit);
+
+        if (amountForLimit.compareTo(BigDecimal.valueOf(transactionLimit.getLimitAmount())) > 0) {
+            throw new CustomException(400, "Transfer amount exceeds the limit of $" + transactionLimit.getLimitAmount());
         }
 
         // Exchange rate
@@ -99,6 +111,17 @@ public class BankOperationServiceImpl implements BankOperationService {
         // Fetch account details
         Account account = accountService.getAccountDetailByAccountNumber(depositWithdrawDto.getAccountNumber());
 
+        var exchangeRateForLimit = exchangeRateService.getExchangeRate(account.getCurrency(), "USD");
+        var transactionLimit = transactionLimitRepository.findByTransactionTypeAndStatusTrue(TransactionType.DEPOSIT);
+        BigDecimal amountForLimit = exchangeRateForLimit.getMethod().cal(depositWithdrawDto.getAmount(), exchangeRateForLimit.getExchangeRate());
+
+        logger.info("transactionLimit: {}", transactionLimit.getLimitAmount());
+        logger.info("amountForLimit: {}", amountForLimit);
+
+        if (amountForLimit.compareTo(BigDecimal.valueOf(transactionLimit.getLimitAmount())) > 0) {
+            throw new CustomException(400, "Deposit amount exceeds the limit of $" + transactionLimit.getLimitAmount());
+        }
+
         // Update balance
         BigDecimal newBalance = account.getBalance().add(depositWithdrawDto.getAmount());
         account.setBalance(newBalance);
@@ -133,6 +156,17 @@ public class BankOperationServiceImpl implements BankOperationService {
 
         if (account.getBalance().compareTo(depositWithdrawDto.getAmount()) < 0) {
             throw new CustomException(402, "Insufficient balance");
+        }
+
+        var exchangeRateForLimit = exchangeRateService.getExchangeRate(account.getCurrency(), "USD");
+        var transactionLimit = transactionLimitRepository.findByTransactionTypeAndStatusTrue(TransactionType.WITHDRAWAL);
+        BigDecimal amountForLimit = exchangeRateForLimit.getMethod().cal(depositWithdrawDto.getAmount(), exchangeRateForLimit.getExchangeRate());
+
+        logger.info("transactionLimit: {}", transactionLimit.getLimitAmount());
+        logger.info("amountForLimit: {}", amountForLimit);
+
+        if (amountForLimit.compareTo(BigDecimal.valueOf(transactionLimit.getLimitAmount())) > 0) {
+            throw new CustomException(400, "Withdraw amount exceeds the limit of $" + transactionLimit.getLimitAmount());
         }
 
         // Update balance
