@@ -14,7 +14,7 @@ public interface UserService {
 
     ResponseMessage registerUser(Users request);
 
-    void updateUser(Long id, UserUpdateDto request);
+    ResponseMessage updateUser(Long id, UserUpdateDto request);
 
     Page<UserResponseDto> getUserList(String query, int page, int size);
 

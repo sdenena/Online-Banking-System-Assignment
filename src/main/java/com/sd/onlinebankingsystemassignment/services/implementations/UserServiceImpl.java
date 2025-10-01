@@ -63,17 +63,31 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseMessage registerUser(Users request) {
+        var existingUser = userRepository.findByUsernameIgnoreCaseAndStatusTrue(request.getUsername());
+
+        if (existingUser.isPresent()) {
+            throw new CustomException(400, "Username or email already exists");
+        }
+
         request.setPassword(passwordEncoder.encode(request.getPassword()));
         userRepository.save(request);
-        return new ResponseMessage();
+        return new ResponseMessage(200, "User registered successfully");
     }
 
     @Override
-    public void updateUser(Long id, UserUpdateDto request) {
-        final var user = userRepository.findByIdAndStatusTrue(id).orElseThrow(() -> new ApiErrorException(404, "User not found"));
+    public ResponseMessage updateUser(Long id, UserUpdateDto request) {
+        final var user = userRepository.findByIdAndStatusTrue(id).orElseThrow(() -> new CustomException(404, "User not found"));
+
+        if (request.getUsername() != null && !request.getUsername().equalsIgnoreCase(user.getUsername())) {
+            var existingUser = userRepository.findByUsernameIgnoreCaseAndStatusTrue(request.getUsername());
+            if (existingUser.isPresent() && !existingUser.get().getId().equals(id)) {
+                throw new CustomException(400, "Username already exists");
+            }
+        }
+
         var userUpdated = request.updateUser(user);
         userRepository.save(userUpdated);
-        new ResponseMessage();
+        return new ResponseMessage(200, "User registered successfully");
     }
 
     @Override

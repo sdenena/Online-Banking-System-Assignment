@@ -19,4 +19,5 @@ public class TransferResponseDto {
     private TransactionType transactionType;
     private TransactionStatus transactionStatus;
     private BigDecimal amount = null;
+    private String currency = null;
 }

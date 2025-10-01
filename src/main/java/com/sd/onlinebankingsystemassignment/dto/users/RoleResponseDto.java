@@ -16,7 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class RoleResponseDto {
     private Long id = null;
-    private String name = null;
+    private String roleName = null;
     private Boolean admin = false;
     private Set<Permission> permissions;
 }

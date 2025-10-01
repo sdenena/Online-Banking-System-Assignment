@@ -18,4 +18,5 @@ public class DepositWithdrawResponseDto {
     private TransactionStatus transactionStatus;
     private String accountNumber = null;
     private BigDecimal amount = null;
+    private String currency = null;
 }
