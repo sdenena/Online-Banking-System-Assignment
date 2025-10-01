@@ -6,4 +6,5 @@ import java.util.Optional;
 
 public interface UserRepository extends BaseRepository<Users> {
     Optional<Users> findByUsernameIgnoreCaseOrEmailIgnoreCaseAndStatusTrue(String username, String email);
+    Optional<Users> findByUsernameIgnoreCaseAndStatusTrue(String username);
 }
